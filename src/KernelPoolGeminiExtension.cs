@@ -7,6 +7,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Soenneker.SemanticKernel.Pool.Abstract;
 
 namespace Soenneker.SemanticKernel.Pool.Gemini;
 
@@ -30,7 +31,7 @@ public static class KernelPoolGeminiExtension
     /// <param name="tokensPerDay">Optional maximum number of tokens allowed per day.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous registration operation.</returns>
-    public static ValueTask RegisterGemini(this KernelPoolManager pool, string key, string modelId, string apiKey, string endpoint, IHttpClientCache httpClientCache, int? rps,
+    public static ValueTask RegisterGemini(this IKernelPoolManager pool, string key, string modelId, string apiKey, string endpoint, IHttpClientCache httpClientCache, int? rps,
         int? rpm, int? rpd, int? tokensPerDay = null, CancellationToken cancellationToken = default)
     {
         var options = new SemanticKernelOptions
@@ -67,7 +68,7 @@ public static class KernelPoolGeminiExtension
     /// <param name="httpClientCache">The HTTP client cache to remove the associated client from.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous unregistration operation.</returns>
-    public static async ValueTask UnregisterGemini(this KernelPoolManager pool, string key, IHttpClientCache httpClientCache, CancellationToken cancellationToken = default)
+    public static async ValueTask UnregisterGemini(this IKernelPoolManager pool, string key, IHttpClientCache httpClientCache, CancellationToken cancellationToken = default)
     {
         await pool.Unregister(key, cancellationToken).NoSync();
         await httpClientCache.Remove($"gemini:{key}", cancellationToken).NoSync();
