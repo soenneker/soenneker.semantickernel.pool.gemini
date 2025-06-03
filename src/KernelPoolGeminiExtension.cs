@@ -21,6 +21,7 @@ public static class SemanticKernelPoolGeminiExtension
     /// Registers a Gemini model in the kernel pool with optional rate and token limits.
     /// </summary>
     /// <param name="pool">The kernel pool manager to register the model with.</param>
+    /// <param name="poolId"></param>
     /// <param name="key">A unique identifier used to register and later reference the model.</param>
     /// <param name="type"></param>
     /// <param name="modelId">The Gemini model ID to be used for chat completion.</param>
@@ -33,7 +34,7 @@ public static class SemanticKernelPoolGeminiExtension
     /// <param name="tokensPerDay">Optional maximum number of tokens allowed per day.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous registration operation.</returns>
-    public static ValueTask RegisterGemini(this ISemanticKernelPool pool, string key, KernelType type, string modelId, string apiKey, string endpoint,
+    public static ValueTask AddGemini(this ISemanticKernelPool pool, string poolId, string key, KernelType type, string modelId, string apiKey, string endpoint,
         IHttpClientCache httpClientCache, int? rps, int? rpm, int? rpd, int? tokensPerDay = null, CancellationToken cancellationToken = default)
     {
         var options = new SemanticKernelOptions
@@ -68,21 +69,22 @@ public static class SemanticKernelPoolGeminiExtension
             }
         };
 
-        return pool.Register(key, options, cancellationToken);
+        return pool.Add(poolId, key, options, cancellationToken);
     }
 
     /// <summary>
     /// Unregisters a Gemini model from the kernel pool and removes associated HTTP client and kernel cache entries.
     /// </summary>
     /// <param name="pool">The kernel pool manager to unregister the model from.</param>
+    /// <param name="poolId"></param>
     /// <param name="key">The unique identifier used during registration.</param>
     /// <param name="httpClientCache">The HTTP client cache to remove the associated client from.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
     /// <returns>A <see cref="ValueTask"/> representing the asynchronous unregistration operation.</returns>
-    public static async ValueTask UnregisterGemini(this ISemanticKernelPool pool, string key, IHttpClientCache httpClientCache,
+    public static async ValueTask RemoveGemini(this ISemanticKernelPool pool, string poolId, string key, IHttpClientCache httpClientCache,
         CancellationToken cancellationToken = default)
     {
-        await pool.Unregister(key, cancellationToken).NoSync();
+        await pool.Remove(poolId, key, cancellationToken).NoSync();
         await httpClientCache.Remove($"gemini:{key}", cancellationToken).NoSync();
     }
 }
