@@ -49,7 +49,7 @@ public static class SemanticKernelPoolGeminiExtension
             TokensPerDay = tokensPerDay,
             KernelFactory = async (opts, _) =>
             {
-                HttpClient httpClient = await httpClientCache.Get($"gemini:{key}", () => new HttpClientOptions
+                HttpClient httpClient = await httpClientCache.Get($"gemini:{poolId}:{key}", () => new HttpClientOptions
                                                              {
                                                                  Timeout = TimeSpan.FromSeconds(300)
                                                              }, cancellationToken)
@@ -85,6 +85,6 @@ public static class SemanticKernelPoolGeminiExtension
         CancellationToken cancellationToken = default)
     {
         await pool.Remove(poolId, key, cancellationToken).NoSync();
-        await httpClientCache.Remove($"gemini:{key}", cancellationToken).NoSync();
+        await httpClientCache.Remove($"gemini:{poolId}:{key}", cancellationToken).NoSync();
     }
 }
