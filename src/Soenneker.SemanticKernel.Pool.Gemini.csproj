@@ -44,6 +44,6 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.51.0-alpha" />
         <PackageReference Include="Soenneker.SemanticKernel.Pool" Version="3.0.103" />
-        <PackageReference Include="Soenneker.Utils.HttpClientCache" Version="3.0.1741" />
+        <PackageReference Include="Soenneker.Utils.HttpClientCache" Version="3.0.1742" />
     </ItemGroup>
 </Project>
