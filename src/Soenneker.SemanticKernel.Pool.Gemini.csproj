@@ -14,7 +14,7 @@
         <AssemblyName>Soenneker.SemanticKernel.Pool.Gemini</AssemblyName>
         <PackageId>Soenneker.SemanticKernel.Pool.Gemini</PackageId>
         <PackageTags>semantickernel pool gemini semantic kernel manager rate limiting entry options multiple google llm ai kernelpoolgeminiextension util csharp dotnet c# .net</PackageTags>
-        <Copyright>Copyright © 2025 Jake Soenneker</Copyright>
+        <Copyright>Copyright © 2025-2026 Jake Soenneker</Copyright>
         <Authors>Jake Soenneker</Authors>
         <Company>https://soenneker.com</Company>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
