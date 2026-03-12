@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Soenneker.SemanticKernel.Pool.Gemini.csproj" />
+        <ProjectReference Include="..\..\src\Soenneker.SemanticKernel.Pool.Gemini\Soenneker.SemanticKernel.Pool.Gemini.csproj" />
     </ItemGroup>
 
     <ItemGroup>
