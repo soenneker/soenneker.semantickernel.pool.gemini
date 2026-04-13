@@ -86,6 +86,6 @@ public static class SemanticKernelPoolGeminiExtension
         CancellationToken cancellationToken = default)
     {
         await pool.Remove(poolId, key, cancellationToken).NoSync();
-        await httpClientCache.Remove($"gemini:{poolId}:{key}", cancellationToken).NoSync();
+        await httpClientCache.Remove($"gemini:{poolId}:{key}").NoSync();
     }
 }
