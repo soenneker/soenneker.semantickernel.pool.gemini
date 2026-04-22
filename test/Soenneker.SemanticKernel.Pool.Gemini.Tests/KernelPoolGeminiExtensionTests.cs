@@ -1,16 +1,15 @@
-﻿using Soenneker.Tests.FixturedUnit;
-using Xunit;
+using Soenneker.Tests.HostedUnit;
 
 namespace Soenneker.SemanticKernel.Pool.Gemini.Tests;
 
-[Collection("Collection")]
-public class KernelPoolGeminiExtensionTests : FixturedUnitTest
+[ClassDataSource<Host>(Shared = SharedType.PerTestSession)]
+public class KernelPoolGeminiExtensionTests : HostedUnitTest
 {
-    public KernelPoolGeminiExtensionTests(Fixture fixture, ITestOutputHelper output) : base(fixture, output)
+    public KernelPoolGeminiExtensionTests(Host host) : base(host)
     {
     }
 
-    [Fact]
+    [Test]
     public void Default()
     {
 
