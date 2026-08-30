@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>Provides Gemini-specific registration extensions for KernelPoolManager, enabling integration with local LLMs via Semantic Kernel.</Description>
+        <Description>Gemini connector registration extensions for Soenneker.SemanticKernel.Pool.</Description>
         <Version Condition="'$(BUILD_VERSION)' == ''">4.0.0</Version>
         <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
         <AssemblyName>Soenneker.SemanticKernel.Pool.Gemini</AssemblyName>

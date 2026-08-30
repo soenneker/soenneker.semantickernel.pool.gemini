@@ -1,40 +1,59 @@
 [![](https://img.shields.io/nuget/v/soenneker.semantickernel.pool.gemini.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.semantickernel.pool.gemini/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.semantickernel.pool.gemini/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.semantickernel.pool.gemini/actions/workflows/publish-package.yml)
-[![](https://img.shields.io/nuget/dt/soenneker.semantickernel.pool.gemini.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.semantickernel.pool.gemini/)
+[![](https://img.shields.io/nuget/dt/soenneker.semantickernel.pool.gemini.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker/soenneker.semantickernel.pool.gemini/)
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.semantickernel.pool.gemini/codeql.yml?label=CodeQL&style=for-the-badge)](https://github.com/soenneker/soenneker.semantickernel.pool.gemini/actions/workflows/codeql.yml)
 
 # Soenneker.SemanticKernel.Pool.Gemini
 
-Provides Gemini-specific registration extensions for KernelPoolManager, enabling integration with local LLMs via Semantic Kernel.
+Gemini connector registration helpers for `Soenneker.SemanticKernel.Pool`.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.SemanticKernel.Pool.Gemini
 ```
 
-## Quick start
+## Add a Gemini entry
+
+Resolve the pool and HTTP client cache from dependency injection, then register a chat or embedding entry:
 
 ```csharp
+using Soenneker.SemanticKernel.Enums.KernelType;
+using Soenneker.SemanticKernel.Pool.Abstract;
 using Soenneker.SemanticKernel.Pool.Gemini;
+using Soenneker.Utils.HttpClientCache.Abstract;
 
-ISemanticKernelPool pool = /* obtain from your application */;
-await pool.AddGemini("value", "value", /* supply type */ default!, "value", "value", "value", /* supply httpClientCache */ default!, 1, 1, 1, default);
+await pool.AddGemini(
+    poolId: "chat",
+    key: "gemini-primary",
+    type: KernelType.Chat,
+    modelId: "gemini-model-id",
+    apiKey: configuration["Gemini:ApiKey"]!,
+    endpoint: "https://generativelanguage.googleapis.com",
+    httpClientCache: httpClientCache,
+    rps: 2,
+    rpm: 60,
+    rpd: 1_000,
+    tokensPerDay: null,
+    cancellationToken);
 ```
 
-Registers a Gemini model in the kernel pool with optional rate and token limits.
+Use `KernelType.Chat` for Google AI chat completion or `KernelType.Embedding` for the Google AI embedding generator. Other kernel types throw `NotSupportedException` when the pool first constructs the kernel.
 
-## What you get
+The adapter caches chat HTTP clients under `gemini:{poolId}:{key}` with a five-minute timeout. The `endpoint` argument is retained in the entry's `SemanticKernelOptions`, but this adapter does not pass it to the Google connector; connector endpoint behavior therefore comes from the Google Semantic Kernel package.
 
-- `SemanticKernelPoolGeminiExtension` — Provides Gemini-specific registration extensions for KernelPoolManager, enabling integration with local LLMs via Semantic Kernel.
+Pool quota values are reservations made when `GetAvailable` selects the entry. `tokensPerDay` counts one unit per acquisition; it is not populated from provider token usage.
 
-## API at a glance
+## Remove the entry
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `SemanticKernelPoolGeminiExtension.AddGemini(pool, poolId, key, type, modelId, apiKey, endpoint, httpClientCache, rps, rpm, rpd, tokensPerDay, cancellationToken)` | Registers a Gemini model in the kernel pool with optional rate and token limits. | A `ValueTask` representing the asynchronous registration operation. |
-| `SemanticKernelPoolGeminiExtension.RemoveGemini(pool, poolId, key, httpClientCache, cancellationToken)` | Unregisters a Gemini model from the kernel pool and removes associated HTTP client and kernel cache entries. | A `ValueTask` representing the asynchronous unregistration operation. |
+Use the matching helper so both the pool entry and its cached HTTP client are removed:
 
-## Practical notes
+```csharp
+await pool.RemoveGemini(
+    "chat",
+    "gemini-primary",
+    httpClientCache,
+    cancellationToken);
+```
 
-- Cancellation stops pending work; it does not undo work that has already completed.
+Keep the API key in a protected configuration provider and avoid logging or serializing the generated `SemanticKernelOptions`.
